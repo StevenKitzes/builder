@@ -1,0 +1,37 @@
+body {
+	background-color: RGB(47.7,177,3.6);
+}
+
+.card {
+	width: 100px;
+	height: 150px;
+	padding: 0.5em;
+}
+.card-section {
+	display: inline-block;
+	margin-right: 2em;
+}
+.single-card {
+	display: inline-block;
+	width: 125px;
+	margin-right: 2em;
+}
+
+.label {
+	display: block;
+	margin: auto;
+	text-align: center;
+	width: 100%;
+}
+.card-content {
+	display: inline;
+}
+
+#offer-bar, #player-bar, #controls-bar {
+	padding-bottom: 2em;
+}
+
+#offer, #p1-hand, #p1-table {
+	border: 3px solid white;
+	border-radius: 2em;
+}

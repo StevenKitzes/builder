@@ -1,8 +1,14 @@
+// Note to observers: this code is a rapid prototype; a cleaner,
+// more organized codebase will be generated if this project
+// is greenlit
+
 var SPADE = 0;
 var HEART = 1;
 var CLUB = 2;
 var DIAMOND = 3;
-var SUITS = ['spade', 'heart', 'club', 'diamond'];
+var SUITS = ['spades', 'hearts', 'clubs', 'diamonds'];
+var HIGHEST_STARTER = 4;
+var RANKS = ['error', 'ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king'];
 
 var gameLoop = true;
 var turn = 0;
@@ -16,21 +22,23 @@ var playerDiscards = [[], []];
 
 var piles = [];
 
+//-- Initial Game Setup Begin
+
 // populate each rank pile
-for(var rank = 0; rank < 5; rank++) {
+for(var rank = 0; rank < 4; rank++) {
 	piles.push([]);
 	for(var suit = 0; suit < 4; suit++) {
-		piles[rank].push({rank: rank+1, suit: suit});
+		piles[rank].push({rank: rank+1, suit: suit});	// rank+1 is because there is no card with 0 value
 	}
 }
 
 // shuffle the cards in each rank pile
-for(var rank = 0; rank < 5; rank++) {
+for(var rank = 0; rank < 4; rank++) {
 	piles[rank] = shuffle(piles[rank]);
 }
 
 // populate each player deck from rank piles
-for(var pile = 0; pile < 5; pile++) {
+for(var pile = 0; pile < 4; pile++) {
 	for(var card = 0; card < 4; card++) {
 		// put this card in player one or two's deck by odd/even
 		if(card % 2 == 0) {
@@ -43,113 +51,91 @@ for(var pile = 0; pile < 5; pile++) {
 }
 
 // shuffle player decks
-playerDecks[0] = shuffle(playerDecks[0]);
-playerDecks[1] = shuffle(playerDecks[1]);
+shuffle(playerDecks[0]);
+shuffle(playerDecks[1]);
 
 // populate rest of offer deck
-for(var rank = 6; rank <= 13; rank++) {
+for(var rank = 5; rank <= 13; rank++) {
 	for(var suit = 0; suit < 4; suit++) {
 		offerDeck.push({rank: rank, suit: suit});
 	}
 }
-offerDeck = shuffle(offerDeck);
+shuffle(offerDeck);
 
 offer = offerDeck.splice(0,5);
 
-console.log('offer: ' + JSON.stringify(offer));
-console.log('offer deck remaining: ' + offerDeck.length);
-
 console.log('game setup complete!');
 
-// start game loop!
-var SAFETY = 0;
-while(gameLoop) {
-	++SAFETY; if(SAFETY > 1000) {console.log('safety break'); break;}
-	var winner = checkWinner(turn);
-	if(winner) {
-		gameLoop = false;
-	}
-	
-	// if player saved their hand, draw one more into it
-	if(playerHands[turn].length > 0) {
-		// if deck empty, shuffle discard back in
-		if(playerDecks[turn].length < 1) {
-			restock(playerDiscards[turn], playerDecks[turn]);
-		}
-		playerHands[turn].push(playerDecks[turn].splice(0,1)[0]);
-	}
-	// otherwise, draw two into empty hand
-	else {
-		if(playerDecks[turn].length < 2) {
-			restock(playerDiscards[turn], playerDecks[turn]);
-		}
-		var pull = playerDecks[turn].splice(0,2);
-		pull.forEach(function(card) {
-			playerHands[turn].push(card);
-		});
-	}
-	
-	console.log('player ' + turn + ' hand: ' + JSON.stringify(playerHands[turn]));
-	break;
-}
+updateDisplay();
 
+//-- Initial Game Setup End
 
-// return a new array by splicing out random indices into it from an old array
+// shuffle array and return ref to it by splicing out random indices into it from an old array
 function shuffle(arr) {
-	var output = [];
-	var removalIndex = -1;
-	var SAFETY_COUNTER = 0;
-	while(arr.length > 0) {
-		SAFETY_COUNTER++; if(SAFETY_COUNTER > 100) {console.log('safety break'); break;}
-		
-		// set removal index from remaining array length
-		removalIndex = Math.floor(Math.random() * Math.floor(arr.length));
-		// splice out at removal index and push onto output array
-		output.push(arr.splice(removalIndex, 1)[0]);
+	for(var i = 0; i < arr.length; i++) {
+		var swapIndex = Math.floor(Math.random() * Math.floor(arr.length));
+		var temp = arr[i];
+		arr[i] = arr[swapIndex];
+		arr[swapIndex] = temp;
 	}
-	return output;
+	return arr;
 }
 
 function checkWinner(player) {
 	// get the table for the selected player
 	var table = playerTables[player];
 
-	// init trackers to all false
-	var jack = false;
-	var queen = false;
-	var king = false;
-
-	// for each card, flag its face as true
+	var faceCounter = 0;
+	
 	table.forEach(function(card) {
-		switch(card.rank) {
-			case 11:
-				jack = true;
-				break;
-			case 12:
-				queen = true;
-				break;
-			case 13:
-				king = true;
-				break;
-			default:
-				console.log('ERROR: a non-face card ended up tabled for player ' + player + '!');
-				return 0;
-		}
+		if(card.rank > 10) faceCounter++;
 	});
 	
-	// if all faces flagged, this player is a winner!
-	if(jack && queen && king) {
-		return player;
+	// if three faces detected, this player is a winner!
+	if(faceCounter >= 3) {
+		console.log('player ' + (player+1) + ' win detected!');
+		return true;
 	}
 	
-	// if any face not flagged, this player hasn't won
-	return 0;
+	console.log('no win detected');
+	return false;
 }
 
-// shuffle player discards, then pop all onto deck
-function restock(source, destination) {
+// shuffle source, then pop all source cards onto destination deck
+function restockFromSource(source, destination) {
 	source = shuffle(source);
 	while(source.length) {
 		destination.push(source.pop());
 	}
+}
+
+function deckEmpty(deck) {
+	if(deck.length < 1) return true;
+	return false;
+}
+
+function logDeck(name, deck) {
+	console.log(name + ':');
+	deck.forEach(function(card) {
+		console.log('  ' + RANKS[card.rank] + ' of ' + SUITS[card.suit]);
+	});
+}
+
+function cardImage(card) {
+	return RANKS[card.rank] + '_of_' + SUITS[card.suit] + '.png';
+}
+
+function updateDisplay() {
+	// draw offer discard
+	
+	
+	// draw offer deck
+	
+	// draw offer
+	
+	// draw p1 discard
+	
+	// draw p1 deck
+	
+	// draw p1 hand
 }

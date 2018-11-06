@@ -3,6 +3,65 @@
 	<head>
 		<meta charset="UTF-8">
 		<script type='text/javascript' src='main.js'></script>
+		<link rel="stylesheet" type="text/css" href="main.css"> 
 	</head>
-	<body>Hello</body>
+	<body>
+		<div id='offer-bar'>
+			<div class='single-card' id='offer-discard'>
+				<div class='label'>Offer Discard</div>
+				<div class='card-content'>
+					<img class='card' src='img/card_empty.png'>
+				</div>
+			</div>
+			<div class='single-card' id='offer-deck'>
+				<div class='label'>Offer Deck</div>
+				<div class='card-content'>
+					<img class='card' src='img/card_back.png'>
+				</div>
+			</div>
+			<div class='card-section' id='offer'>
+				<div class='label'>Offer</div>
+				<div class='card-content'>
+					<img class='card' src='img/6_of_hearts.png'>
+					<img class='card' src='img/7_of_spades.png'>
+					<img class='card' src='img/8_of_hearts.png'>
+					<img class='card' src='img/9_of_spades.png'>
+					<img class='card' src='img/10_of_diamonds.png'>
+				</div>
+			</div>
+		</div>
+		<div id='player-bar'>
+			<div class='single-card' id='p1-discard'>
+				<div class='label'>Player 1 Discard</div>
+				<div class='card-content'>
+					<img class='card' src='img/2_of_clubs.png'>
+				</div>
+			</div>
+			<div class='single-card' id='p1-deck'>
+				<div class='label'>Player 1 Deck</div>
+				<div class='card-content'>
+					<img class='card' src='img/card_back.png'>
+				</div>
+			</div>
+			<div class='card-section' id='p1-hand'>
+				<div class='label'>Player 1 Hand</div>
+				<div class='card-content'>
+					<img class='card' src='img/2_of_hearts.png'>
+					<img class='card' src='img/2_of_spades.png'>
+					<img class='card' src='img/2_of_diamonds.png'>
+				</div>
+			</div>
+			<div class='card-section' id='p1-table'>
+				<div class='label'>Player 1 Table</div>
+				<div class='card-content'>
+					<img class='card' src='img/jack_of_hearts.png'>
+					<img class='card' src='img/queen_of_spades.png'>
+					<img class='card' src='img/king_of_diamonds.png'>
+				</div>
+			</div>
+		</div>
+		<div id='controls-bar'>
+			<button id='button-draw'>Draw</button>
+		</div>
+	</body>
 </html>
