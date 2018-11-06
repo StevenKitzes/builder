@@ -134,7 +134,7 @@ function updateDisplay() {
 		offerDiscardsElement.innerHTML = cardEmptyAsString();
 	}
 	else {
-		offerDiscardsElement.innerHTML = cardImageAsString(offerDiscards[offerDiscards.length-1]);
+		offerDiscardsElement.innerHTML = cardImageAsString(offerDiscards[offerDiscards.length-1], offerDiscards);
 	}
 	
 	// draw offer deck
@@ -143,7 +143,7 @@ function updateDisplay() {
 		offerDeckElement.innerHTML = cardEmptyAsString();
 	}
 	else {
-		offerDeckElement.innerHTML = cardBackAsString();
+		offerDeckElement.innerHTML = cardBackAsString(offerDeck.length);
 	}
 	
 	// draw offer
@@ -174,7 +174,7 @@ function updateDisplay() {
 		p1DiscardsElement.innerHTML = cardEmptyAsString();
 	}
 	else {
-		p1DiscardsElement.innerHTML = cardImageAsString(playerDiscards[0][playerDiscards[0].length-1]);
+		p1DiscardsElement.innerHTML = cardImageAsString(playerDiscards[0][playerDiscards[0].length-1], playerDiscards[0].length);
 	}
 	
 	// draw p1 deck
@@ -183,7 +183,7 @@ function updateDisplay() {
 		p1DeckElement.innerHTML = cardEmptyAsString();
 	}
 	else {
-		p1DeckElement.innerHTML = cardBackAsString();
+		p1DeckElement.innerHTML = cardBackAsString(playerDecks[0].length);
 	}
 	
 	// draw p1 hand
@@ -211,14 +211,16 @@ function updateDisplay() {
 	}
 }
 
-function cardImageAsString(card) {
+function cardImageAsString(card, count) {
 	var name = cardName(card);
-	var tag = "<img class='card' id='" +  name + "' src='img/" + name + ".png'>";
+	var title = (count ? "title='" + count + " cards in pile'" : '');
+	var tag = "<img class='card' " + title + " id='" +  name + "' src='img/" + name + ".png'>";
 	return tag;
 }
 function cardEmptyAsString() {
 	return "<img class='card' src='img/card_empty.png'>";
 }
-function cardBackAsString() {
-	return "<img class='card' src='img/card_back.png'>";
+function cardBackAsString(count) {
+	var title = (count ? "title='" + count + " cards remaining'" : '');
+	return "<img class='card' " + title + " src='img/card_back.png'>";
 }
