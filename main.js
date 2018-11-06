@@ -12,7 +12,7 @@ var RANKS = ['error', 'ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack
 
 var gameLoop = true;
 var turn = 0;
-
+var offerDiscards = [];
 var offerDeck = [];
 var offer = [];
 var playerDecks = [[], []];
@@ -66,7 +66,9 @@ offer = offerDeck.splice(0,5);
 
 console.log('game setup complete!');
 
-updateDisplay();
+document.addEventListener('DOMContentLoaded', function(event) {
+	updateDisplay();
+});
 
 //-- Initial Game Setup End
 
@@ -121,21 +123,102 @@ function logDeck(name, deck) {
 	});
 }
 
-function cardImage(card) {
-	return RANKS[card.rank] + '_of_' + SUITS[card.suit] + '.png';
+function cardName(card) {
+	return RANKS[card.rank] + '_of_' + SUITS[card.suit];
 }
 
 function updateDisplay() {
 	// draw offer discard
-	
+	var offerDiscardsElement = document.querySelector('#offer-discards .card-content');
+	if(offerDiscards.length < 1) {
+		offerDiscardsElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		offerDiscardsElement.innerHTML = cardImageAsString(offerDiscards[offerDiscards.length-1]);
+	}
 	
 	// draw offer deck
+	var offerDeckElement = document.querySelector('#offer-deck .card-content');
+	if(offerDeck.length < 1) {
+		offerDeckElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		offerDeckElement.innerHTML = cardBackAsString();
+	}
 	
 	// draw offer
+	var offerElement = document.querySelector('#offer .card-content');
+	offerElement.innerHTML = '';
+	if(offer.length > 5) {
+		console.log('ERROR: offer had more than five cards in it');
+		for(var i = 0; i < 5; i++) {
+			offerElement.innerHTML += cardBackAsString();
+		}
+		return;
+	}
+	// for each offer slot
+	for(var i = 0; i < 5; i++) {
+		// draw card if there's a card in this slot
+		if(offer[i]) {
+			offerElement.innerHTML += cardImageAsString(offer[i]);
+		}
+		// else, draw empty spot
+		else {
+			offerDeckElement.innerHTML = cardEmptyAsString();
+		}
+	}
 	
 	// draw p1 discard
+	var p1DiscardsElement = document.querySelector('#p1-discards .card-content');
+	if(playerDiscards[0].length < 1) {
+		p1DiscardsElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		p1DiscardsElement.innerHTML = cardImageAsString(playerDiscards[0][playerDiscards[0].length-1]);
+	}
 	
 	// draw p1 deck
+	var p1DeckElement = document.querySelector('#p1-deck .card-content');
+	if(playerDecks[0].length < 1) {
+		p1DeckElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		p1DeckElement.innerHTML = cardBackAsString();
+	}
 	
 	// draw p1 hand
+	var p1HandElement = document.querySelector('#p1-hand .card-content');
+	if(playerHands[0].length < 1) {
+		p1HandElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		p1HandElement.innerHTML = '';
+		playerHands[0].forEach(function(card) {
+			p1HandElement.innerHTML += cardImageAsString(card);
+		});
+	}
+	
+	// draw p1 table
+	var p1TableElement = document.querySelector('#p1-table .card-content');
+	if(playerTables[0].length < 1) {
+		p1TableElement.innerHTML = cardEmptyAsString();
+	}
+	else {
+		p1TableElement.innerHTML = '';
+		playerTables[0].forEach(function(card) {
+			p1TableElement.innerHTML += cardImageAsString(card);
+		});
+	}
+}
+
+function cardImageAsString(card) {
+	var name = cardName(card);
+	var tag = "<img class='card' id='" +  name + "' src='img/" + name + ".png'>";
+	return tag;
+}
+function cardEmptyAsString() {
+	return "<img class='card' src='img/card_empty.png'>";
+}
+function cardBackAsString() {
+	return "<img class='card' src='img/card_back.png'>";
 }

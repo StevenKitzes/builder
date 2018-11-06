@@ -35,3 +35,7 @@ body {
 	border: 3px solid white;
 	border-radius: 2em;
 }
+
+#p1-table {
+	background-color: gray;
+}
