@@ -27,15 +27,15 @@ body {
 	display: inline;
 }
 
-#offer-bar, #player-bar, #controls-bar {
+#offer-bar, #p1-bar, #p2-bar, #controls-bar {
 	padding-bottom: 2em;
 }
 
-#offer, #p1-hand, #p1-table {
+#offer, #p1-hand, #p2-hand, #p1-table, #p2-table {
 	border: 3px solid white;
 	border-radius: 2em;
 }
 
-#p1-table {
+#p1-table, #p2-table {
 	background-color: gray;
 }
